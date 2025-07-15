@@ -41,16 +41,21 @@ class SimplerKokoro:
     """
     SimplerKokoro provides a simplified interface for generating speech and subtitles using Kokoro voices.
     """
-    def __init__(self, device: str = "cpu"):
+    def __init__(self, 
+            device: str = "cpu",
+            models_dir: str = 'models'
+        ):
         """
         Initialize SimplerKokoro.
         Args:
             device (str): Device to use for inference (default: "cpu").
+            models_dir (str): Directory to store model files (default: 'models' in active directory).
         """
         self.device = device
         import kokoro
         self.kokoro = kokoro
         self.voices = self.list_voices()
+        
 
 
     def generate(
