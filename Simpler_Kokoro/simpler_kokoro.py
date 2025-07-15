@@ -111,7 +111,7 @@ class SimplerKokoro:
         speed: float = 1.0,
         write_subtitles: bool = False,
         subtitles_path: str = 'subtitles.srt',
-        subtititles_word_level: bool = False,
+        subtititles_word_level: bool = False
     ):
         """
         Generate speech audio and optional subtitles from text using a Kokoro voice.
@@ -128,33 +128,36 @@ class SimplerKokoro:
         # Find the voice index and language code
         voice_index = next((i for i, v in enumerate(self.voices) if v['name'] == voice), 0)
         lang_code = self.voices[voice_index]['lang_code']
+        model_path = self.voices[voice_index]['model_path']
 
         # Create Kokoro pipeline
         pipeline = self.kokoro.KPipeline(
             lang_code=lang_code,
             repo_id="hexgrad/Kokoro-82M"
         )
-        
-        voice = self.voices[voice_index]
-        
-        if os.path.exists(voice['model_path']):
-            exit(f"Voice model {voice['model_path']} does not exist. Available voices: {self.list_voices()}")
-        
-        try:
-            import torch
-            voice_tensor = torch.load(voice['model_path'], weights_only=True)
-            generator = pipeline(
-                model=voice_tensor,
-                text=text,
-                voice=voice,
-                speed=speed,
-                split_pattern=r'\.\s+|\n',
-            )
 
-        except Exception as e:
-            print(f"Error loading voice model: {e}")
-            print("Falling back to default voice generation.")
-            # Generate audio chunks
+        # Use custom model if provided
+        if model_path:
+            try:
+                import torch
+                voice_model = torch.load(model_path, weights_only=True)
+                generator = pipeline(
+                    text=text,
+                    voice=voice_model,
+                    speed=speed,
+                    split_pattern=r'\.\s+|\n',
+                )
+            except Exception as e:
+                print(f"Error loading custom model: {e}")
+                print("Falling back to default voice generation.")
+                generator = pipeline(
+                    text=text,
+                    voice=voice,
+                    speed=speed,
+                    split_pattern=r'\.\s+|\n',
+                )
+        else:
+            print("Using default voice generation.")
             generator = pipeline(
                 text=text,
                 voice=voice,
