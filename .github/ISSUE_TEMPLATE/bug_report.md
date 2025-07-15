@@ -1,7 +1,10 @@
 ---
 name: Bug Report
-description: File a bug report to help us improve Simpler_Kokoro.
+about: How to make a bug report
+title: "[BUG]"
 labels: bug
+assignees: WilleIshere
+
 ---
 
 **Describe the bug**

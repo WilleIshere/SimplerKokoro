@@ -1,7 +1,10 @@
 ---
 name: Feature Request
-description: Suggest an idea for Simpler_Kokoro.
+about: How to make a feature request
+title: "[FEATURE REQUEST]"
 labels: enhancement
+assignees: WilleIshere
+
 ---
 
 **Is your feature request related to a problem? Please describe.**
