@@ -52,11 +52,23 @@ class SimplerKokoro:
             models_dir (str): Directory to store model files (default: 'models' in active directory).
         """
         self.device = device
+        
+        self.kororo_model_path = os.path.join(models_dir, 'kokoro')
+        self.kokoro_voices_path = os.path.join(self.kororo_model_path, 'voices')
+        
         import kokoro
         self.kokoro = kokoro
+        
         self.voices = self.list_voices()
         
-
+    
+    def ensure_models_dirs(self):
+        """
+        Ensure the necessary model directories exist.
+        Creates the kokoro model directory and voices directory if they do not exist.
+        """
+        os.makedirs(self.kororo_model_path, exist_ok=True)
+        os.makedirs(self.kokoro_voices_path, exist_ok=True)
 
     def generate(
         self,
