@@ -108,4 +108,4 @@ This is another sentence.
 
 ## License
 
-MIT
+GPL-3.0 license
