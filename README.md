@@ -78,6 +78,17 @@ sk.generate(
 )
 ```
 
+### Specify a path to download models
+
+```python
+sk.generate(
+    models_dir: str = "Folder-to-put-models-in"
+    text="Thats a cool model directory.",
+    voice=voices[1]['name'],
+    output_path="fast_output.wav",
+)
+```
+
 ### Example Output Files
 
 - `output.wav`: The synthesized speech audio file.
