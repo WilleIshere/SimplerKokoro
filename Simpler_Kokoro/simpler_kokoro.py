@@ -3,6 +3,7 @@ import os
 import warnings
 import tempfile
 import soundfile as sf
+import huggingface_hub as hf
 
 # Suppress common warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -41,17 +42,66 @@ class SimplerKokoro:
     """
     SimplerKokoro provides a simplified interface for generating speech and subtitles using Kokoro voices.
     """
-    def __init__(self, device: str = "cpu"):
+    def __init__(self, 
+            device: str = "cpu",
+            models_dir: str = 'models'
+        ):
         """
         Initialize SimplerKokoro.
         Args:
             device (str): Device to use for inference (default: "cpu").
+            models_dir (str): Directory to store model files (default: 'models' in active directory).
         """
         self.device = device
+        
+        self.models_dir = models_dir
+        
+        self.kororo_model_path = os.path.join(self.models_dir, 'kokoro')
+        self.kokoro_voices_path = os.path.join(self.models_dir, 'voices')
+        
+        self.kokoro_model_path = os.path.join(self.models_dir, 'kokoro', 'kokoro-v1_0.pth')
+        
+        self.ensure_models_dirs()
+        self.download_models()
+        
         import kokoro
         self.kokoro = kokoro
+        
         self.voices = self.list_voices()
-
+        
+    def download_models(self):
+        """
+        Download the Kokoro model files if they do not exist.
+        Downloads the main model and voice files to the specified models directory.
+        """
+        if not os.path.exists(self.kokoro_model_path):
+            hf.hf_hub_download(
+                repo_id="hexgrad/Kokoro-82M",
+                filename="kokoro-v1_0.pth",
+                local_dir=self.kororo_model_path,
+                local_dir_use_symlinks=False
+            )
+            
+        for voices_hf in hf.list_repo_files("hexgrad/Kokoro-82M"):
+            if voices_hf.lstrip('voices/') in VOICE_FILES:
+                voice_file = os.path.join(self.kokoro_voices_path, voices_hf)
+                if not os.path.exists(voice_file):
+                    hf.hf_hub_download(
+                        repo_id="hexgrad/Kokoro-82M",
+                        filename=voices_hf,
+                        local_dir=self.models_dir,
+                        local_dir_use_symlinks=False
+                    )
+            
+        
+    
+    def ensure_models_dirs(self):
+        """
+        Ensure the necessary model directories exist.
+        Creates the kokoro model directory and voices directory if they do not exist.
+        """
+        os.makedirs(self.kororo_model_path, exist_ok=True)
+        os.makedirs(self.kokoro_voices_path, exist_ok=True)
 
     def generate(
         self,
@@ -61,7 +111,7 @@ class SimplerKokoro:
         speed: float = 1.0,
         write_subtitles: bool = False,
         subtitles_path: str = 'subtitles.srt',
-        subtititles_word_level: bool = False,
+        subtititles_word_level: bool = False
     ):
         """
         Generate speech audio and optional subtitles from text using a Kokoro voice.
@@ -78,6 +128,7 @@ class SimplerKokoro:
         # Find the voice index and language code
         voice_index = next((i for i, v in enumerate(self.voices) if v['name'] == voice), 0)
         lang_code = self.voices[voice_index]['lang_code']
+        model_path = self.voices[voice_index]['model_path']
 
         # Create Kokoro pipeline
         pipeline = self.kokoro.KPipeline(
@@ -85,13 +136,34 @@ class SimplerKokoro:
             repo_id="hexgrad/Kokoro-82M"
         )
 
-        # Generate audio chunks
-        generator = pipeline(
-            text=text,
-            voice=voice,
-            speed=speed,
-            split_pattern=r'\.\s+|\n',
-        )
+        # Use custom model if provided
+        if model_path:
+            try:
+                import torch
+                voice_model = torch.load(model_path, weights_only=True)
+                generator = pipeline(
+                    text=text,
+                    voice=voice_model,
+                    speed=speed,
+                    split_pattern=r'\.\s+|\n',
+                )
+            except Exception as e:
+                print(f"Error loading custom model: {e}")
+                print("Falling back to default voice generation.")
+                generator = pipeline(
+                    text=text,
+                    voice=voice,
+                    speed=speed,
+                    split_pattern=r'\.\s+|\n',
+                )
+        else:
+            print("Using default voice generation.")
+            generator = pipeline(
+                text=text,
+                voice=voice,
+                speed=speed,
+                split_pattern=r'\.\s+|\n',
+            )
 
         subs = {}
         word = 0
@@ -176,6 +248,7 @@ class SimplerKokoro:
                 'name': name,
                 'display_name': display_name,
                 'gender': gender,
-                'lang_code': lang_code
+                'lang_code': lang_code,
+                'model_path': os.path.join(self.kokoro_voices_path, f"{voice}.pt")
             })
         return voices
