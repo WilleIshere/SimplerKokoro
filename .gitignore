@@ -6,3 +6,4 @@ dist/
 build/
 models/
 pytest_cache/
+Simpler_Kokoro.egg-info/
