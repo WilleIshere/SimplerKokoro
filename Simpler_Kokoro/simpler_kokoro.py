@@ -54,10 +54,12 @@ class SimplerKokoro:
         """
         self.device = device
         
-        self.kororo_model_path = os.path.join(models_dir, 'kokoro')
-        self.kokoro_voices_path = os.path.join(self.kororo_model_path, 'voices')
+        self.models_dir = models_dir
         
-        self.kokoro_model_path = os.path.join(models_dir, 'kokoro', 'kokoro-v1_0.pth')
+        self.kororo_model_path = os.path.join(self.models_dir, 'kokoro')
+        self.kokoro_voices_path = os.path.join(self.models_dir, 'voices')
+        
+        self.kokoro_model_path = os.path.join(self.models_dir, 'kokoro', 'kokoro-v1_0.pth')
         
         self.ensure_models_dirs()
         self.download_models()
@@ -73,11 +75,24 @@ class SimplerKokoro:
         Downloads the main model and voice files to the specified models directory.
         """
         if not os.path.exists(self.kokoro_model_path):
+            hf.hf_hub_download(
+                repo_id="hexgrad/Kokoro-82M",
+                filename="kokoro-v1_0.pth",
+                local_dir=self.kororo_model_path,
+                local_dir_use_symlinks=False
+            )
             
+        for voices_hf in hf.list_repo_files("hexgrad/Kokoro-82M"):
+            if voices_hf.lstrip('voices/') in VOICE_FILES:
+                voice_file = os.path.join(self.kokoro_voices_path, voices_hf)
+                if not os.path.exists(voice_file):
+                    hf.hf_hub_download(
+                        repo_id="hexgrad/Kokoro-82M",
+                        filename=voices_hf,
+                        local_dir=self.models_dir,
+                        local_dir_use_symlinks=False
+                    )
             
-            os.makedirs(self.kororo_model_path, exist_ok=True)
-            with open(self.kokoro_model_path, 'w') as f:
-                f.write("Kokoro model data")
         
     
     def ensure_models_dirs(self):
@@ -119,14 +134,33 @@ class SimplerKokoro:
             lang_code=lang_code,
             repo_id="hexgrad/Kokoro-82M"
         )
+        
+        voice = self.voices[voice_index]
+        
+        if os.path.exists(voice['model_path']):
+            exit(f"Voice model {voice['model_path']} does not exist. Available voices: {self.list_voices()}")
+        
+        try:
+            import torch
+            voice_tensor = torch.load(voice['model_path'], weights_only=True)
+            generator = pipeline(
+                model=voice_tensor,
+                text=text,
+                voice=voice,
+                speed=speed,
+                split_pattern=r'\.\s+|\n',
+            )
 
-        # Generate audio chunks
-        generator = pipeline(
-            text=text,
-            voice=voice,
-            speed=speed,
-            split_pattern=r'\.\s+|\n',
-        )
+        except Exception as e:
+            print(f"Error loading voice model: {e}")
+            print("Falling back to default voice generation.")
+            # Generate audio chunks
+            generator = pipeline(
+                text=text,
+                voice=voice,
+                speed=speed,
+                split_pattern=r'\.\s+|\n',
+            )
 
         subs = {}
         word = 0
@@ -211,6 +245,7 @@ class SimplerKokoro:
                 'name': name,
                 'display_name': display_name,
                 'gender': gender,
-                'lang_code': lang_code
+                'lang_code': lang_code,
+                'model_path': os.path.join(self.kokoro_voices_path, f"{voice}.pt")
             })
         return voices
