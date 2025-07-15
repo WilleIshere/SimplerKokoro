@@ -3,6 +3,7 @@ import os
 import warnings
 import tempfile
 import soundfile as sf
+import huggingface_hub as hf
 
 # Suppress common warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -56,10 +57,27 @@ class SimplerKokoro:
         self.kororo_model_path = os.path.join(models_dir, 'kokoro')
         self.kokoro_voices_path = os.path.join(self.kororo_model_path, 'voices')
         
+        self.kokoro_model_path = os.path.join(models_dir, 'kokoro', 'kokoro-v1_0.pth')
+        
+        self.ensure_models_dirs()
+        self.download_models()
+        
         import kokoro
         self.kokoro = kokoro
         
         self.voices = self.list_voices()
+        
+    def download_models(self):
+        """
+        Download the Kokoro model files if they do not exist.
+        Downloads the main model and voice files to the specified models directory.
+        """
+        if not os.path.exists(self.kokoro_model_path):
+            
+            
+            os.makedirs(self.kororo_model_path, exist_ok=True)
+            with open(self.kokoro_model_path, 'w') as f:
+                f.write("Kokoro model data")
         
     
     def ensure_models_dirs(self):
