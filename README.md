@@ -10,7 +10,13 @@ Simpler_Kokoro is a Python package that makes it easy to use the Kokoro voice sy
 
 ## Installation
 
-Install from PyPI (coming soon) or clone the repo and install locally:
+Install from PyPI:
+
+```bash
+pip install Simpler-Kokoro
+```
+
+or clone the repo and install locally:
 
 ```bash
 git clone https://github.com/WilleIshere/SimplerKokoro.git
