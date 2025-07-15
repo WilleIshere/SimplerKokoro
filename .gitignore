@@ -1,4 +1,8 @@
 .venv
-dist
-build
-Simpler_Kokoro.egg-info
+*.pyc
+__pycache__/
+*.pkl
+dist/
+build/
+models/
+pytest_cache/
