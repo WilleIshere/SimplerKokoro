@@ -21,13 +21,8 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
 ]
-license = "GPL-3.0 license"
+license = "GPL-3.0"
 license-files = ["LICEN[CS]E*"]
-
-[tool.setuptools.packages.find]
-exclude = ["tests", "tests.*", "models", "models.*"]
-include = ["Simpler_Kokoro", "Simpler_Kokoro.*"]
-
 
 [project.urls]
 Homepage = "https://github.com/WilleIshere/SimplerKokoro"
