@@ -1,23 +1,37 @@
-![Poster](https://github.com/WilleIshere/SimplerKokoro/blob/main/poster.jpg?raw=true "SimplerKokoro")
 
-# SimplerKokoro
-SimplerKokoro is a Python package that makes it easy to use the Kokoro speech synthesis library.
+<p align="center">
+  <img src="https://github.com/WilleIshere/SimplerKokoro/blob/main/poster.jpg?raw=true" alt="SimplerKokoro" width="60%">
+</p>
 
-## Features
-- Simple interface for generating speech audio and subtitles
-- Supports all Kokoro voices
-- Outputs valid SRT subtitles
-- Automatic Model Management
+<h1 align="center">SimplerKokoro</h1>
 
-## Installation
+<p align="center">
+  <b>Effortless speech synthesis with Kokoro, in Python.</b><br>
+  <a href="https://pypi.org/project/Simpler-Kokoro/"><img src="https://img.shields.io/pypi/v/Simpler-Kokoro?color=blue" alt="PyPI version"></a>
+  <img src="https://img.shields.io/badge/python-3.10+-blue.svg" alt="Python 3.10+">
+  <img src="https://img.shields.io/github/license/WilleIshere/SimplerKokoro" alt="License">
+</p>
 
-Install from PyPI:
+---
+
+## ✨ Features
+
+- **Simple interface** for generating speech audio and subtitles
+- **Supports all Kokoro voices**
+- **Outputs valid SRT subtitles**
+- **Automatic Model Management**
+
+---
+
+## 🚀 Installation
+
+**From PyPI:**
 
 ```bash
 pip install Simpler-Kokoro
 ```
 
-or clone the repo and install locally:
+**Or clone the repo and install locally:**
 
 ```bash
 git clone https://github.com/WilleIshere/SimplerKokoro.git
@@ -25,17 +39,23 @@ cd SimplerKokoro
 pip install .
 ```
 
-## Requirements
+
+---
+
+## 📦 Requirements
+
 - Python 3.10+
 - torch
 - kokoro
 - soundfile
 
-All dependencies are installed automatically.
+<sub>All dependencies except Python are installed automatically.</sub>
 
-## Usage
 
-### Basic Example
+## 🛠️ Usage
+
+<details>
+<summary><b>Basic Example</b></summary>
 
 ```python
 from Simpler_Kokoro import SimplerKokoro
@@ -54,8 +74,10 @@ sk.generate(
     output_path="output.wav"
 )
 ```
+</details>
 
-### Generate Speech with Subtitles
+<details>
+<summary><b>Generate Speech with Subtitles</b></summary>
 
 ```python
 sk.generate(
@@ -67,8 +89,10 @@ sk.generate(
     subtititles_word_level=True
 )
 ```
+</details>
 
-### Generate Speech with Custom Speed
+<details>
+<summary><b>Generate Speech with Custom Speed</b></summary>
 
 ```python
 sk.generate(
@@ -78,24 +102,31 @@ sk.generate(
     speed=1.5
 )
 ```
+</details>
 
-### Specify a path to download models
+<details>
+<summary><b>Specify a Path to Download Models</b></summary>
 
 ```python
 sk.generate(
-    models_dir="Folder-to-put-models-in"
+    models_dir="Folder-to-put-models-in",
     text="Thats a cool model directory.",
     voice=voices[1]['name'],
     output_path="fast_output.wav",
 )
 ```
+</details>
 
-### Example Output Files
+---
+
+### 📂 Example Output Files
 
 - `output.wav`: The synthesized speech audio file.
 - `output.srt`: Subtitles in SRT format (if `write_subtitles=True`).
 
-Sample SRT output:
+<details>
+<summary>Sample SRT output</summary>
+
 ```
 1
 00:00:00,000 --> 00:00:01,200
@@ -109,15 +140,21 @@ this is a test.
 00:00:02,500 --> 00:00:04,000
 This is another sentence.
 ```
+</details>
 
-## API
+---
 
-### SimplerKokoro
+## 📖 API
+
+### <code>SimplerKokoro</code>
 
 #### Methods
-- `list_voices()`: Returns a list of available voices with metadata.
-- `generate(text, voice, output_path, speed=1.0, write_subtitles=False, subtitles_path='subtitles.srt', subtititles_word_level=False)`: Generates speech audio and optional subtitles.
 
-## License
+- <code>list_voices()</code>: Returns a list of available voices with metadata.
+- <code>generate(text, voice, output_path, speed=1.0, write_subtitles=False, subtitles_path='subtitles.srt', subtititles_word_level=False)</code>: Generates speech audio and optional subtitles.
 
-GPL-3.0 license
+---
+
+## 📄 License
+
+This project is licensed under the **GPL-3.0** license.
