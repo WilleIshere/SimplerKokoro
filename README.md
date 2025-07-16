@@ -1,6 +1,7 @@
 # SimplerKokoro
 
 SimplerKokoro is a Python package that makes it easy to use the Kokoro voice synthesis library.
+![alt text]([https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png](https://github.com/WilleIshere/SimplerKokoro/blob/3f0887b0a690aab584d89795dd5c1d9309c5ca7f/poster.jpg) "Logo Title Text 1")
 
 ## Features
 - Simple interface for generating speech audio and subtitles
