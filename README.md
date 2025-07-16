@@ -54,6 +54,18 @@ pip install .
 <sub>All dependencies except Python are installed automatically.</sub>
 
 
+
+## 🧑‍💻 Examples
+
+You can find runnable example scripts in the [`examples/`](examples) folder:
+
+- [`basic_example.py`](examples/basic_example.py): Basic usage, generate speech from text.
+- [`subtitles_example.py`](examples/subtitles_example.py): Generate speech with SRT subtitles.
+- [`custom_speed_example.py`](examples/custom_speed_example.py): Generate speech with custom speed.
+- [`custom_models_dir_example.py`](examples/custom_models_dir_example.py): Specify a custom directory for model downloads.
+
+---
+
 ## 🛠️ Usage
 
 <details>
