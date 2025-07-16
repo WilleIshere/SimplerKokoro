@@ -7,9 +7,11 @@
 
 <p align="center">
   <b>Effortless speech synthesis with Kokoro, in Python.</b><br>
-  <a href="https://pypi.org/project/Simpler-Kokoro/"><img src="https://img.shields.io/pypi/v/Simpler-Kokoro?color=blue" alt="PyPI version"></a>
-  <img src="https://img.shields.io/badge/python-3.10+-blue.svg" alt="Python 3.10+">
-  <img src="https://img.shields.io/github/license/WilleIshere/SimplerKokoro" alt="License">
+  <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/simpler-kokoro">
+  <img alt="PyPI - Version" src="https://img.shields.io/pypi/v/simpler-kokoro">
+  <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/WilleIshere/SimplerKokoro">
+<img alt="PyPI - License" src="https://img.shields.io/pypi/l/simpler-kokoro">
+
 </p>
 
 ---
@@ -158,3 +160,13 @@ This is another sentence.
 ## 📄 License
 
 This project is licensed under the **GPL-3.0** license.
+
+---
+
+<h2 align="center">⭐ Star History</h2>
+
+<p align="center">
+  <a href="https://star-history.com/#WilleIshere/SimplerKokoro&Date">
+    <img src="https://api.star-history.com/svg?repos=WilleIshere/SimplerKokoro&type=Date" alt="Star History Chart" width="60%" />
+  </a>
+</p>
