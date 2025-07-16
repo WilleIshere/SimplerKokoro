@@ -12,6 +12,11 @@
   <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/WilleIshere/SimplerKokoro">
 <img alt="PyPI - License" src="https://img.shields.io/pypi/l/simpler-kokoro">
 
+
+</p>
+
+<p align="center">
+  <a href="https://pypi.org/project/Simpler-Kokoro/" style="font-size:1.1em;"><b>View on PyPI</b></a>
 </p>
 
 ---
