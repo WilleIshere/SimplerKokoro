@@ -25,7 +25,7 @@ VOICE_FILES = [
     # British Male voices
     "bm_daniel.pt", "bm_fable.pt", "bm_george.pt", "bm_lewis.pt",
     # Special voices
-    "el_dora.pt", "em_alex.pt", "em_santa.pt",
+    "ef_dora.pt", "em_alex.pt", "em_santa.pt",
     "ff_siwis.pt",
     "hf_alpha.pt", "hf_beta.pt",
     "hm_omega.pt", "hm_psi.pt",
