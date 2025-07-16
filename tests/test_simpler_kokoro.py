@@ -1,5 +1,5 @@
 import pytest
-from Simpler_Kokoro.Simpler_Kokoro import SimplerKokoro
+from Simpler_Kokoro import SimplerKokoro
 
 from pprint import pprint
 
