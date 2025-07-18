@@ -207,6 +207,8 @@ class SimplerKokoro:
                     f.write(f"{sub['text']}\n\n")
     
     def list_voices(self):
+        from pprint import pprint
+
         """
         Return a list of available Kokoro voices with metadata.
         Returns:
@@ -217,7 +219,6 @@ class SimplerKokoro:
         pprint(voices)
         
         for voice in voices:
-            from pprint import pprint
             # Debugging output
             voice = voice.lstrip('voices/').rstrip('.pt')
             pprint(voice)
