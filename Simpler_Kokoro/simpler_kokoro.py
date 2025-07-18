@@ -56,7 +56,7 @@ class SimplerKokoro:
             )
             
         for voices_hf in hf.list_repo_files("hexgrad/Kokoro-82M"):
-            if voices_hf.lstrip('voices/') in VOICE_FILES:
+            if voices_hf.lstrip('voices/') in []:
                 voice_file = os.path.join(self.kokoro_voices_path, voices_hf)
                 if not os.path.exists(voice_file):
                     hf.hf_hub_download(
@@ -210,8 +210,9 @@ class SimplerKokoro:
         Returns:
             List[dict]: List of voice metadata dicts.
         """
-        voices_list = [x.replace('.pt', '') for x in VOICE_FILES]
-        voices = []
+        repo_files = hf.list_repo_files("hexgrad/Kokoro-82M")
+        voices = [f for f in repo_files if f.startswith("voices/")]
+        
         for voice in voices_list:
             name = voice
             display_name = voice[3:].capitalize()
@@ -224,4 +225,5 @@ class SimplerKokoro:
                 'lang_code': lang_code,
                 'model_path': os.path.join(self.kokoro_voices_path, f"{voice}.pt")
             })
+            
         return voices
