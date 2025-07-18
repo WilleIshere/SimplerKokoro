@@ -219,6 +219,7 @@ class SimplerKokoro:
             from pprint import pprint
             # Debugging output
             voice = voice.lstrip('voices/').rstrip('.pt')
+            pprint(voice)
             name = voice
             display_name = voice[3:].capitalize()
             lang_code = voice[0]
