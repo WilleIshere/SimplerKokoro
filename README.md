@@ -38,6 +38,7 @@
 pip install Simpler-Kokoro
 ```
 
+
 **Or clone the repo and install locally:**
 
 ```bash
@@ -45,6 +46,33 @@ git clone https://github.com/WilleIshere/SimplerKokoro.git
 cd SimplerKokoro
 pip install .
 ```
+
+---
+
+
+## 🏗️ Build from Source
+
+To build the package from source:
+
+```bash
+git clone https://github.com/WilleIshere/SimplerKokoro.git
+cd SimplerKokoro
+pip install build
+python -m build
+```
+
+This will create distribution files in the `dist/` directory:
+
+- `.whl` (wheel) file for pip installation
+- `.tar.gz` source archive
+
+To install the built wheel locally:
+
+```bash
+pip install dist/Simpler_Kokoro-*.whl
+```
+
+You can now use the package as described in the usage section.
 
 
 ---
