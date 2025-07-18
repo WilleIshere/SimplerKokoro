@@ -216,7 +216,9 @@ class SimplerKokoro:
         voices = [f for f in repo_files if f.startswith("voices/")]
         
         for voice in voices:
-            print(voice)
+            from pprint import pprint
+            # Debugging output
+            pprint(voice)
             name = voice.replace("voices/", "").replace(".pt", "")
             display_name = voice[3:].capitalize()
             lang_code = voice[0]
