@@ -218,8 +218,8 @@ class SimplerKokoro:
         for voice in voices:
             from pprint import pprint
             # Debugging output
-            pprint(voice)
-            name = voice.replace("voices/", "").replace(".pt", "")
+            voice = voice.lstrip('voices/').rstrip('.pt')
+            name = voice
             display_name = voice[3:].capitalize()
             lang_code = voice[0]
             gender = 'Male' if voice[1] == 'm' else 'Female'
