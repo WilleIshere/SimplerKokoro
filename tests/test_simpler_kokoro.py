@@ -6,10 +6,14 @@ from pprint import pprint
 
 def test_load_pipeline():
     SimplerKokoro()
+    
+    assert True, "Pipeline loaded successfully."
 
 def test_list_voices():
     simpler_kokoro = SimplerKokoro()
     simpler_kokoro.list_voices()
+    
+    assert len(simpler_kokoro.list_voices()) > 0, "No voices found."
     
 def test_generate():
     simpler_kokoro = SimplerKokoro()
