@@ -216,8 +216,8 @@ class SimplerKokoro:
         voices = [f for f in repo_files if f.startswith("voices/")]
         
         for voice in voices:
-            voice = voice.lstrip('voices/').rstrip('.pt')
-            name = voice
+            print(voice)
+            name = voice.replace("voices/", "").replace(".pt", "")
             display_name = voice[3:].capitalize()
             lang_code = voice[0]
             gender = 'Male' if voice[1] == 'm' else 'Female'
