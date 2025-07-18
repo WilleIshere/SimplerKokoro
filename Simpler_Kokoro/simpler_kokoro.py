@@ -206,22 +206,17 @@ class SimplerKokoro:
                     f.write(f"{srt_time(sub['start'])} --> {srt_time(sub['end'])}\n")
                     f.write(f"{sub['text']}\n\n")
     
-    def list_voices(self):
-        from pprint import pprint
-
+    def list_voices(self) -> list[dict]:
         """
         Return a list of available Kokoro voices with metadata.
         Returns:
             List[dict]: List of voice metadata dicts.
         """
         repo_files = hf.list_repo_files("hexgrad/Kokoro-82M")
-        voices = [f for f in repo_files if f.startswith("voices/")]
-        pprint(voices)
-        
-        for voice in voices:
-            # Debugging output
-            voice = voice.lstrip('voices/').rstrip('.pt')
-            pprint(voice)
+        voice_files = [f for f in repo_files if f.startswith("voices/") and f.endswith(".pt")]
+        voices = []
+        for vf in voice_files:
+            voice = vf.lstrip('voices/').rstrip('.pt')
             name = voice
             display_name = voice[3:].capitalize()
             lang_code = voice[0]
