@@ -10,33 +10,6 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 warnings.filterwarnings("ignore", category=UserWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
 
-# List of available Kokoro voice files (borrowed from Kokoro-Local-Gui)
-VOICE_FILES = [
-    # American Female voices
-    "af_alloy.pt", "af_aoede.pt", "af_bella.pt", "af_jessica.pt",
-    "af_kore.pt", "af_nicole.pt", "af_nova.pt", "af_river.pt",
-    "af_sarah.pt", "af_sky.pt",
-    # American Male voices
-    "am_adam.pt", "am_echo.pt", "am_eric.pt", "am_fenrir.pt",
-    "am_liam.pt", "am_michael.pt", "am_onyx.pt", "am_puck.pt",
-    "am_santa.pt",
-    # British Female voices
-    "bf_alice.pt", "bf_emma.pt", "bf_isabella.pt", "bf_lily.pt",
-    # British Male voices
-    "bm_daniel.pt", "bm_fable.pt", "bm_george.pt", "bm_lewis.pt",
-    # Special voices
-    "ef_dora.pt", "em_alex.pt", "em_santa.pt",
-    "ff_siwis.pt",
-    "hf_alpha.pt", "hf_beta.pt",
-    "hm_omega.pt", "hm_psi.pt",
-    "jf_sara.pt", "jm_nicola.pt",
-    "jf_alpha.pt", "jf_gongtsuene.pt", "jf_nezumi.pt", "jf_tebukuro.pt",
-    "jm_kumo.pt",
-    "pf_dora.pt", "pm_alex.pt", "pm_santa.pt",
-    "zf_xiaobei.pt", "zf_xiaoni.pt", "zf_xiaoqiao.pt", "zf_xiaoyi.pt"
-]
-
-
 
 class SimplerKokoro:
     """
