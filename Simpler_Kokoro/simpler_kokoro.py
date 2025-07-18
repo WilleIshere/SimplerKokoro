@@ -57,15 +57,16 @@ class SimplerKokoro:
             )
             
         for voices_hf in hf.list_repo_files("hexgrad/Kokoro-82M"):
-            voice_file = os.path.join(self.kokoro_voices_path, voices_hf)
-            if not os.path.exists(voice_file):
-                print(f"Downloading voice model: {voices_hf}")
-                hf.hf_hub_download(
-                    repo_id="hexgrad/Kokoro-82M",
-                    filename=voices_hf,
-                    local_dir=self.models_dir,
-                    local_dir_use_symlinks=False
-                )
+            if voices_hf.startswith('voices/') and voices_hf.endswith('.pt'):
+                voice_file = os.path.join(self.kokoro_voices_path, voices_hf)
+                if not os.path.exists(voice_file):
+                    print(f"Downloading voice model: {voices_hf}")
+                    hf.hf_hub_download(
+                        repo_id="hexgrad/Kokoro-82M",
+                        filename=voices_hf,
+                        local_dir=self.models_dir,
+                        local_dir_use_symlinks=False
+                    )
             
         
     
