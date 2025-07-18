@@ -1,6 +1,5 @@
 import pytest
 from Simpler_Kokoro import SimplerKokoro
-from huggingface_hub import list_repo_files
 
 from pprint import pprint
 
@@ -33,7 +32,4 @@ def test_generate():
 
 
 if __name__ == "__main__":
-    sk = SimplerKokoro()
-    voices = sk.list_voices()
-    
-    pprint(voices)
+    pytest.main()
