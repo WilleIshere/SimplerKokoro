@@ -214,6 +214,7 @@ class SimplerKokoro:
         """
         repo_files = hf.list_repo_files("hexgrad/Kokoro-82M")
         voices = [f for f in repo_files if f.startswith("voices/")]
+        pprint(voices)
         
         for voice in voices:
             from pprint import pprint
