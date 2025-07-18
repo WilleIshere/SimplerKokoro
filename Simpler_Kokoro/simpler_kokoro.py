@@ -10,33 +10,6 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 warnings.filterwarnings("ignore", category=UserWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
 
-# List of available Kokoro voice files (borrowed from Kokoro-Local-Gui)
-VOICE_FILES = [
-    # American Female voices
-    "af_alloy.pt", "af_aoede.pt", "af_bella.pt", "af_jessica.pt",
-    "af_kore.pt", "af_nicole.pt", "af_nova.pt", "af_river.pt",
-    "af_sarah.pt", "af_sky.pt",
-    # American Male voices
-    "am_adam.pt", "am_echo.pt", "am_eric.pt", "am_fenrir.pt",
-    "am_liam.pt", "am_michael.pt", "am_onyx.pt", "am_puck.pt",
-    "am_santa.pt",
-    # British Female voices
-    "bf_alice.pt", "bf_emma.pt", "bf_isabella.pt", "bf_lily.pt",
-    # British Male voices
-    "bm_daniel.pt", "bm_fable.pt", "bm_george.pt", "bm_lewis.pt",
-    # Special voices
-    "ef_dora.pt", "em_alex.pt", "em_santa.pt",
-    "ff_siwis.pt",
-    "hf_alpha.pt", "hf_beta.pt",
-    "hm_omega.pt", "hm_psi.pt",
-    "jf_sara.pt", "jm_nicola.pt",
-    "jf_alpha.pt", "jf_gongtsuene.pt", "jf_nezumi.pt", "jf_tebukuro.pt",
-    "jm_kumo.pt",
-    "pf_dora.pt", "pm_alex.pt", "pm_santa.pt",
-    "zf_xiaobei.pt", "zf_xiaoni.pt", "zf_xiaoqiao.pt", "zf_xiaoyi.pt"
-]
-
-
 
 class SimplerKokoro:
     """
@@ -75,6 +48,7 @@ class SimplerKokoro:
         Downloads the main model and voice files to the specified models directory.
         """
         if not os.path.exists(self.kokoro_model_path):
+            print("Downloading Main Kokoro model...")
             hf.hf_hub_download(
                 repo_id="hexgrad/Kokoro-82M",
                 filename="kokoro-v1_0.pth",
@@ -83,9 +57,10 @@ class SimplerKokoro:
             )
             
         for voices_hf in hf.list_repo_files("hexgrad/Kokoro-82M"):
-            if voices_hf.lstrip('voices/') in VOICE_FILES:
+            if voices_hf.startswith('voices/') and voices_hf.endswith('.pt'):
                 voice_file = os.path.join(self.kokoro_voices_path, voices_hf)
                 if not os.path.exists(voice_file):
+                    print(f"Downloading voice model: {voices_hf}")
                     hf.hf_hub_download(
                         repo_id="hexgrad/Kokoro-82M",
                         filename=voices_hf,
@@ -231,15 +206,17 @@ class SimplerKokoro:
                     f.write(f"{srt_time(sub['start'])} --> {srt_time(sub['end'])}\n")
                     f.write(f"{sub['text']}\n\n")
     
-    def list_voices(self):
+    def list_voices(self) -> list[dict]:
         """
         Return a list of available Kokoro voices with metadata.
         Returns:
             List[dict]: List of voice metadata dicts.
         """
-        voices_list = [x.replace('.pt', '') for x in VOICE_FILES]
+        repo_files = hf.list_repo_files("hexgrad/Kokoro-82M")
+        voice_files = [f for f in repo_files if f.startswith("voices/") and f.endswith(".pt")]
         voices = []
-        for voice in voices_list:
+        for vf in voice_files:
+            voice = vf.lstrip('voices/').rstrip('.pt')
             name = voice
             display_name = voice[3:].capitalize()
             lang_code = voice[0]
@@ -251,4 +228,5 @@ class SimplerKokoro:
                 'lang_code': lang_code,
                 'model_path': os.path.join(self.kokoro_voices_path, f"{voice}.pt")
             })
+            
         return voices
