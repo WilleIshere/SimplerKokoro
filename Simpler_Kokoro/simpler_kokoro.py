@@ -213,7 +213,8 @@ class SimplerKokoro:
         repo_files = hf.list_repo_files("hexgrad/Kokoro-82M")
         voices = [f for f in repo_files if f.startswith("voices/")]
         
-        for voice in voices_list:
+        for voice in voices:
+            voice = voice.lstrip('voices/').rstrip('.pt')
             name = voice
             display_name = voice[3:].capitalize()
             lang_code = voice[0]
