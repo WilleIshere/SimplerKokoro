@@ -19,7 +19,18 @@
   <a href="https://pypi.org/project/Simpler-Kokoro/" style="font-size:1.1em;"><b>View on PyPI</b></a>
 </p>
 
----
+## 📚 Table of Contents
+
+- [Features](#-features)
+- [Installation](#-installation)
+- [Build from Source](#-build-from-source)
+- [Requirements](#-requirements)
+- [Examples](#-examples)
+- [Usage](#-usage)
+- [Example Output Files](#-example-output-files)
+- [API](#-api)
+- [License](#-license)
+
 
 ## ✨ Features
 
