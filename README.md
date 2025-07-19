@@ -128,7 +128,7 @@ print("Available voices:", [v['name'] for v in voices])
 # Generate speech
 sk.generate(
     text="Hello, this is a test of the Simpler Kokoro voice synthesis.",
-    voice=voices[0]['name'],
+    voice=voices[0]['name'], # Make sure to specify the name of the voice
     output_path="output.wav"
 )
 ```
