@@ -331,6 +331,3 @@ def main():
         print(f"Audio saved to {args.output}")
         if args.write_subtitles:
             print(f"Subtitles saved to {args.subtitles_path}")
-
-if __name__ == "__main__":
-    main()
