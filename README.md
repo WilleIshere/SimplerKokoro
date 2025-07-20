@@ -49,7 +49,6 @@
 pip install Simpler-Kokoro
 ```
 
-
 **Or clone the repo and install locally:**
 
 ```bash
@@ -174,6 +173,46 @@ sk.generate(
 )
 ```
 </details>
+
+---
+
+## 🖥️ Command Line Interface (CLI)
+
+You can use the library in the command line too.
+
+Example:
+
+```bash
+python -m Simpler_Kokoro <command> [options]
+```
+
+#### Commands and Options
+
+| Command         | Description                        | Options                                                                                       |
+|-----------------|------------------------------------|-----------------------------------------------------------------------------------------------|
+| list-voices     | List available Kokoro voices       | --repo, --models_dir, --log_level                                                            |
+| generate        | Generate speech audio from text    | --text (required), --voice (required), --output (required), --speed, --write_subtitles, --subtitles_path, --subtitles_word_level, --repo, --models_dir, --log_level |
+
+**Global options:**
+
+| Option              | Description                                      | Default                |
+|---------------------|--------------------------------------------------|------------------------|
+| --repo              | HuggingFace repo to use for models               | hexgrad/Kokoro-82M     |
+| --models_dir        | Directory to store model files                   | models                 |
+| --log_level         | Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL) | INFO              |
+
+**Generate command options:**
+
+| Option                  | Description                                 | Default         |
+|-------------------------|---------------------------------------------|-----------------|
+| --text                  | Text to synthesize (required)               |                 |
+| --voice                 | Voice name to use (required)                |                 |
+| --output                | Output WAV file path (required)             |                 |
+| --speed                 | Speech speed multiplier                     | 1.0             |
+| --write_subtitles       | Write SRT subtitles                         | False           |
+| --subtitles_path        | Path to save subtitles                      | subtitles.srt    |
+| --subtitles_word_level  | Word-level subtitles                        | False           |
+
 
 ---
 
