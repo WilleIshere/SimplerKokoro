@@ -21,16 +21,16 @@
 
 ## 📚 Table of Contents
 
-- [Features](#-features)
-- [Requirements](#-requirements)
-- [Installation](#-installation)
-- [Examples](#-examples)
-- [Usage](#-usage)
-- [CLI](#-command-line-interface)
-- [Example Output Files](#-example-output-files)
-- [Build from Source](#-build-from-source)
-- [API](#-api)
-- [License](#-license)
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Examples](#examples)
+- [Usage](#usage)
+- [Command Line Interface (CLI)](#command-line-interface-cli)
+- [Example Output Files](#example-output-files)
+- [Build from Source](#build-from-source)
+- [API](#api)
+- [License](#license)
 
 ---
 
