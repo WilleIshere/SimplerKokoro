@@ -22,15 +22,17 @@
 ## 📚 Table of Contents
 
 - [Features](#-features)
-- [Installation](#-installation)
-- [Build from Source](#-build-from-source)
 - [Requirements](#-requirements)
+- [Installation](#-installation)
 - [Examples](#-examples)
 - [Usage](#-usage)
+- [CLI](#-command-line-interface)
 - [Example Output Files](#-example-output-files)
+- [Build from Source](#-build-from-source)
 - [API](#-api)
 - [License](#-license)
 
+---
 
 ## ✨ Features
 
@@ -38,6 +40,17 @@
 - **Supports all Kokoro voices**
 - **Outputs valid SRT subtitles**
 - **Automatic Model Management**
+
+---
+
+## 📦 Requirements
+
+- Python 3.10+
+- torch
+- kokoro
+- soundfile
+
+<sub>All dependencies except Python are installed automatically.</sub>
 
 ---
 
@@ -58,45 +71,6 @@ pip install .
 ```
 
 ---
-
-
-## 🏗️ Build from Source
-
-To build the package from source:
-
-```bash
-git clone https://github.com/WilleIshere/SimplerKokoro.git
-cd SimplerKokoro
-pip install build
-python -m build
-```
-
-This will create distribution files in the `dist/` directory:
-
-- `.whl` (wheel) file for pip installation
-- `.tar.gz` source archive
-
-To install the built wheel locally:
-
-```bash
-pip install dist/Simpler_Kokoro-*.whl
-```
-
-You can now use the package as described in the usage section.
-
-
----
-
-## 📦 Requirements
-
-- Python 3.10+
-- torch
-- kokoro
-- soundfile
-
-<sub>All dependencies except Python are installed automatically.</sub>
-
-
 
 ## 🧑‍💻 Examples
 
@@ -240,6 +214,34 @@ This is another sentence.
 </details>
 
 ---
+
+## 🏗️ Build from Source
+
+To build the package from source:
+
+```bash
+git clone https://github.com/WilleIshere/SimplerKokoro.git
+cd SimplerKokoro
+pip install build
+python -m build
+```
+
+This will create distribution files in the `dist/` directory:
+
+- `.whl` (wheel) file for pip installation
+- `.tar.gz` source archive
+
+To install the built wheel locally:
+
+```bash
+pip install dist/Simpler_Kokoro-*.whl
+```
+
+You can now use the package as described in the usage section.
+
+
+---
+
 
 ## 📖 API
 
