@@ -10,6 +10,7 @@
   <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/simpler-kokoro">
   <img alt="PyPI - Version" src="https://img.shields.io/pypi/v/simpler-kokoro">
   <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/WilleIshere/SimplerKokoro">
+  <img alt="PyPI Downloads" src="https://static.pepy.tech/badge/simpler-kokoro">
 <img alt="PyPI - License" src="https://img.shields.io/pypi/l/simpler-kokoro">
 
 
