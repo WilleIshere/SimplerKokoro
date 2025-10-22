@@ -112,6 +112,8 @@ sk.generate(
 <summary><b>Generate Speech with Subtitles</b></summary>
 
 ```python
+sk = SimplerKokoro()
+
 sk.generate(
     text="Hello, this is a test. This is another sentence.",
     voice=voices[0]['name'],
@@ -127,6 +129,8 @@ sk.generate(
 <summary><b>Generate Speech with Custom Speed</b></summary>
 
 ```python
+sk = SimplerKokoro()
+
 sk.generate(
     text="This is spoken faster than normal.",
     voice=voices[1]['name'],
@@ -140,8 +144,9 @@ sk.generate(
 <summary><b>Specify a Path to Download Models</b></summary>
 
 ```python
+sk = SimplerKokoro(models_dir="Folder-to-put-models-in") # Put the models dir here
+
 sk.generate(
-    models_dir="Folder-to-put-models-in",
     text="Thats a cool model directory.",
     voice=voices[1]['name'],
     output_path="fast_output.wav",
