@@ -4,23 +4,21 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "Simpler_Kokoro"
-version = "1.2.0"
-authors = [
-  { name="WilleIshere" },
-]
+version = "1.2.1"
+authors = [{ name = "WilleIshere" }]
 description = "A package to make kokoro simpler to work with"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "kokoro>=0.9.4",
-    "soundfile>=0.13.1",
-    "torch>=2.7.1",
-    "huggingface_hub>=0.33.4",
+  "kokoro>=0.9.4",
+  "soundfile>=0.13.1",
+  "torch>=2.7.1",
+  "huggingface_hub>=0.33.4",
 ]
 
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
 ]
 license = "GPL-3.0"
 license-files = ["LICEN[CS]E*"]
