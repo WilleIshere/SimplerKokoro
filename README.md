@@ -6,7 +6,7 @@
 <h1 align="center">SimplerKokoro</h1>
 
 <p align="center">
-  <b>Effortless speech synthesis with Kokoro, with subtitle support, in Python.</b><br>
+  <b>Easy speech synthesis with Kokoro, with subtitle support, in Python.</b><br>
   <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/simpler-kokoro">
   <img alt="PyPI - Version" src="https://img.shields.io/pypi/v/simpler-kokoro">
   <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/WilleIshere/SimplerKokoro">
