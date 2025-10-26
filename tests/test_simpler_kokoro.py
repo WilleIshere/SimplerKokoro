@@ -14,7 +14,7 @@ from unittest.mock import Mock, patch, MagicMock, call
 import numpy as np
 
 # Import the module to test
-from simpler_kokoro import (
+from Simpler_Kokoro import (
     SimplerKokoro,
     Voice,
     GenerationConfig,
@@ -749,3 +749,4 @@ class TestEdgeCases:
 
 if __name__ == '__main__':
     pytest.main([__file__, '-v', '--tb=short'])
+    
