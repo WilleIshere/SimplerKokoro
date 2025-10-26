@@ -37,10 +37,11 @@
 
 ## ✨ Features
 
-- **Simple interface** for generating speech audio and subtitles
-- **Supports all Kokoro voices**
-- **Outputs valid SRT subtitles**
+- **Simpler interface for generating speech audio and subtitles**
+- **Easier Subtitles with Sentance and Word Timestamps**
+- **Supports all Kokoro Voices with a Simpler Voice System**
 - **Automatic Model Management**
+- **More Readable for Beginners**
 
 ---
 
