@@ -1,11 +1,18 @@
 from Simpler_Kokoro import SimplerKokoro
 
+# Create an instance
 sk = SimplerKokoro()
+
+# Load the available voices
 voices = sk.list_voices()
 
+# Use the first voice as example
+selected_voice = voices[0]
+
+# Generate speech
 sk.generate(
-    text="This is spoken faster than normal.",
-    voice=voices[1]['name'],
-    output_path="fast_output.wav",
-    speed=1.5
+    text="Hello, this is a test of the Simpler Kokoro voice synthesis.", # Text to generate 
+    voice=selected_voice.name, # Grab the name from the selected voice
+    output_path="output.wav", # Select the output path
+    speed=1 # This represents 100% Speed. 2 means 200% and 0.5 means 50%
 )
