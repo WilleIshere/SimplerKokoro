@@ -187,7 +187,6 @@ sk.generate(
     voice=selected_voice.name, # Grab the name from the selected voice
     output_path='output.wav' # Select the output path.
 )
-
 ```
 </details>
 
