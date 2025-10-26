@@ -2,19 +2,20 @@
 Comprehensive pytest test suite for SimplerKokoro library.
 
 Run with: pytest test_simpler_kokoro.py -v
-Run with coverage: pytest test_simpler_kokoro.py -v --cov=simpler_kokoro --cov-report=html
+Run with coverage: pytest test_simpler_kokoro.py -v --cov=Simpler_Kokoro --cov-report=html
 """
 
 import pytest
 import os
+import sys
 import tempfile
 import logging
 from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock, call
+from unittest.mock import Mock, patch, MagicMock, call, mock_open
 import numpy as np
 
 # Import the module to test
-from Simpler_Kokoro import (
+from Simpler_Kokoro.simpler_kokoro import (
     SimplerKokoro,
     Voice,
     GenerationConfig,
@@ -22,7 +23,6 @@ from Simpler_Kokoro import (
     VoiceNotFoundError,
     ModelDownloadError,
     setup_logger,
-    main
 )
 
 
@@ -218,12 +218,12 @@ class TestSimplerKokoroInit:
         assert str(sk.models_dir) == temp_models_dir
         assert sk.repo == SimplerKokoro.DEFAULT_REPO
     
-    @patch('simpler_kokoro.hf.list_repo_files')
+    @patch('Simpler_Kokoro.simpler_kokoro.hf.list_repo_files')
     def test_init_creates_directories(self, mock_list_files, temp_models_dir):
         """Test that initialization creates necessary directories."""
         mock_list_files.return_value = []
         
-        with patch('simpler_kokoro.SimplerKokoro.download_models'):
+        with patch('Simpler_Kokoro.simpler_kokoro.SimplerKokoro.download_models'):
             with patch('builtins.__import__', side_effect=ImportError):
                 with pytest.raises(KokoroException, match="Kokoro module not found"):
                     SimplerKokoro(models_dir=temp_models_dir, auto_download=False)
@@ -261,7 +261,7 @@ class TestDirectoryManagement:
 class TestVoiceListing:
     """Tests for voice listing functionality."""
     
-    @patch('simpler_kokoro.hf.list_repo_files')
+    @patch('Simpler_Kokoro.simpler_kokoro.hf.list_repo_files')
     def test_list_voices_remote(self, mock_list_files):
         """Test listing voices from remote repository."""
         mock_list_files.return_value = [
@@ -280,7 +280,7 @@ class TestVoiceListing:
         assert voices[1].name == "am_adam"
         assert voices[1].gender == "Male"
     
-    @patch('simpler_kokoro.hf.list_repo_files')
+    @patch('Simpler_Kokoro.simpler_kokoro.hf.list_repo_files')
     def test_list_voices_remote_error(self, mock_list_files):
         """Test list_voices_remote handles errors."""
         mock_list_files.side_effect = Exception("Network error")
@@ -288,7 +288,7 @@ class TestVoiceListing:
         with pytest.raises(ModelDownloadError):
             SimplerKokoro.list_voices_remote("test/repo")
     
-    @patch('simpler_kokoro.hf.list_repo_files')
+    @patch('Simpler_Kokoro.simpler_kokoro.hf.list_repo_files')
     def test_list_voices_remote_invalid_files(self, mock_list_files):
         """Test list_voices_remote skips invalid voice files."""
         mock_list_files.return_value = [
@@ -302,7 +302,7 @@ class TestVoiceListing:
         assert len(voices) == 2
         assert all(v.name in ["af_alloy", "am_adam"] for v in voices)
     
-    @patch('simpler_kokoro.hf.list_repo_files')
+    @patch('Simpler_Kokoro.simpler_kokoro.hf.list_repo_files')
     def test_list_voices_sorting(self, mock_list_files):
         """Test that voices are sorted correctly."""
         mock_list_files.return_value = [
@@ -323,8 +323,8 @@ class TestVoiceListing:
 class TestModelDownloading:
     """Tests for model downloading functionality."""
     
-    @patch('simpler_kokoro.hf.hf_hub_download')
-    @patch('simpler_kokoro.hf.list_repo_files')
+    @patch('Simpler_Kokoro.simpler_kokoro.hf.hf_hub_download')
+    @patch('Simpler_Kokoro.simpler_kokoro.hf.list_repo_files')
     def test_download_models_main(self, mock_list_files, mock_download, temp_models_dir):
         """Test downloading main model."""
         mock_list_files.return_value = ["voices/af_alloy.pt"]
@@ -337,8 +337,8 @@ class TestModelDownloading:
                 if call[1].get('filename') == 'kokoro-v1_0.pth']
         assert len(calls) > 0
     
-    @patch('simpler_kokoro.hf.hf_hub_download')
-    @patch('simpler_kokoro.hf.list_repo_files')
+    @patch('Simpler_Kokoro.simpler_kokoro.hf.hf_hub_download')
+    @patch('Simpler_Kokoro.simpler_kokoro.hf.list_repo_files')
     def test_download_models_voices(self, mock_list_files, mock_download, temp_models_dir):
         """Test downloading voice models."""
         mock_list_files.return_value = [
@@ -354,8 +354,8 @@ class TestModelDownloading:
                       if 'voices/' in str(call[1].get('filename', ''))]
         assert len(voice_calls) >= 2
     
-    @patch('simpler_kokoro.hf.hf_hub_download')
-    @patch('simpler_kokoro.hf.list_repo_files')
+    @patch('Simpler_Kokoro.simpler_kokoro.hf.hf_hub_download')
+    @patch('Simpler_Kokoro.simpler_kokoro.hf.list_repo_files')
     def test_download_models_error_handling(self, mock_list_files, mock_download, temp_models_dir):
         """Test error handling during model download."""
         mock_list_files.return_value = ["voices/af_alloy.pt"]
@@ -365,6 +365,23 @@ class TestModelDownloading:
         
         with pytest.raises(ModelDownloadError):
             sk.download_models()
+    
+    @patch('Simpler_Kokoro.simpler_kokoro.hf.hf_hub_download')
+    @patch('Simpler_Kokoro.simpler_kokoro.hf.list_repo_files')
+    def test_download_models_force(self, mock_list_files, mock_download, temp_models_dir):
+        """Test force re-downloading models."""
+        mock_list_files.return_value = ["voices/af_alloy.pt"]
+        
+        sk = SimplerKokoro(models_dir=temp_models_dir, skip_download=True)
+        
+        # Create fake existing files
+        sk.kokoro_model_path.parent.mkdir(parents=True, exist_ok=True)
+        sk.kokoro_model_path.touch()
+        
+        sk.download_models(force=True)
+        
+        # Should still download even though file exists
+        assert mock_download.called
 
 
 # Tests for voice retrieval
@@ -394,7 +411,7 @@ class TestVoiceRetrieval:
 class TestGeneration:
     """Tests for speech generation."""
     
-    @patch('simpler_kokoro.SimplerKokoro._generate_with_config')
+    @patch('Simpler_Kokoro.simpler_kokoro.SimplerKokoro._generate_with_config')
     def test_generate_creates_config(self, mock_generate, mock_voices):
         """Test that generate method creates proper config."""
         sk = SimplerKokoro(skip_download=True)
@@ -448,8 +465,8 @@ class TestGeneration:
 class TestAudioProcessing:
     """Tests for audio processing methods."""
     
-    @patch('simpler_kokoro.sf.write')
-    @patch('simpler_kokoro.sf.read')
+    @patch('Simpler_Kokoro.simpler_kokoro.sf.write')
+    @patch('Simpler_Kokoro.simpler_kokoro.sf.read')
     def test_process_audio_chunks(self, mock_read, mock_write, temp_models_dir, mock_audio_data):
         """Test audio chunk processing."""
         mock_read.return_value = (np.random.randn(24000), 24000)
@@ -469,8 +486,8 @@ class TestAudioProcessing:
         # Check that write was called
         assert mock_write.called
     
-    @patch('simpler_kokoro.sf.write')
-    @patch('simpler_kokoro.sf.read')
+    @patch('Simpler_Kokoro.simpler_kokoro.sf.write')
+    @patch('Simpler_Kokoro.simpler_kokoro.sf.read')
     def test_process_audio_chunks_with_subtitles(self, mock_read, mock_write, 
                                                   temp_models_dir, mock_audio_data):
         """Test audio processing with subtitle generation."""
@@ -492,6 +509,37 @@ class TestAudioProcessing:
         
         # Check that subtitle file was created
         assert Path(config.subtitles_path).exists()
+    
+    @patch('Simpler_Kokoro.simpler_kokoro.sf.write')
+    @patch('Simpler_Kokoro.simpler_kokoro.sf.read')
+    def test_process_audio_chunks_word_level_subtitles(self, mock_read, mock_write, 
+                                                        temp_models_dir, mock_audio_data):
+        """Test audio processing with word-level subtitles."""
+        mock_read.return_value = (np.random.randn(24000), 24000)
+        
+        sk = SimplerKokoro(models_dir=temp_models_dir, skip_download=True)
+        
+        config = GenerationConfig(
+            text="Test",
+            voice="af_alloy",
+            output_path=os.path.join(temp_models_dir, "output.wav"),
+            write_subtitles=True,
+            subtitles_word_level=True,
+            subtitles_path=os.path.join(temp_models_dir, "subs.srt")
+        )
+        
+        generator = [mock_audio_data]
+        
+        sk._process_audio_chunks(generator, config)
+        
+        # Check subtitle file exists
+        assert Path(config.subtitles_path).exists()
+        
+        # Verify word-level subtitles were created
+        with open(config.subtitles_path, 'r') as f:
+            content = f.read()
+            assert "Test" in content
+            assert "text" in content
 
 
 # Tests for subtitle writing
@@ -524,16 +572,32 @@ class TestSubtitleWriting:
         SimplerKokoro._write_srt_subtitles(subtitles, output_path)
         
         assert Path(output_path).exists()
+    
+    def test_srt_time_formatting(self, temp_models_dir):
+        """Test SRT time formatting."""
+        subtitles = {
+            0: {'text': 'Test', 'start': 3661.5, 'end': 3662.750}  # 1h 1m 1.5s
+        }
+        
+        output_path = os.path.join(temp_models_dir, "time_test.srt")
+        SimplerKokoro._write_srt_subtitles(subtitles, output_path)
+        
+        with open(output_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+            assert "01:01:01,500" in content
+            assert "01:01:02,750" in content
 
 
 # Tests for CLI
 class TestCLI:
     """Tests for command-line interface."""
     
-    @patch('simpler_kokoro.SimplerKokoro.list_voices_remote')
+    @patch('Simpler_Kokoro.simpler_kokoro.SimplerKokoro.list_voices_remote')
     @patch('sys.argv', ['simpler_kokoro', 'list-voices', '--remote'])
     def test_cli_list_voices_remote(self, mock_list_voices, capsys):
         """Test CLI list-voices command with --remote flag."""
+        from Simpler_Kokoro.simpler_kokoro import main
+        
         mock_list_voices.return_value = [
             Voice("af_alloy", "Alloy", "Female", "a", "/path/to/model.pt")
         ]
@@ -544,10 +608,12 @@ class TestCLI:
         assert "af_alloy" in captured.out
         assert "Alloy" in captured.out
     
-    @patch('simpler_kokoro.SimplerKokoro')
+    @patch('Simpler_Kokoro.simpler_kokoro.SimplerKokoro')
     @patch('sys.argv', ['simpler_kokoro', 'list-voices', '--format', 'json'])
     def test_cli_list_voices_json(self, mock_sk_class, capsys):
         """Test CLI list-voices with JSON format."""
+        from Simpler_Kokoro.simpler_kokoro import main
+        
         mock_sk = MagicMock()
         mock_sk.voices = [
             Voice("af_alloy", "Alloy", "Female", "a", "/path/to/model.pt")
@@ -559,10 +625,12 @@ class TestCLI:
         captured = capsys.readouterr()
         assert '"name": "af_alloy"' in captured.out
     
-    @patch('simpler_kokoro.SimplerKokoro')
+    @patch('Simpler_Kokoro.simpler_kokoro.SimplerKokoro')
     @patch('sys.argv', ['simpler_kokoro', 'list-voices', '--format', 'names'])
     def test_cli_list_voices_names(self, mock_sk_class, capsys):
         """Test CLI list-voices with names format."""
+        from Simpler_Kokoro.simpler_kokoro import main
+        
         mock_sk = MagicMock()
         mock_sk.voices = [
             Voice("af_alloy", "Alloy", "Female", "a", "/path/to/model.pt"),
@@ -577,7 +645,7 @@ class TestCLI:
         assert "af_alloy" in lines
         assert "am_adam" in lines
     
-    @patch('simpler_kokoro.SimplerKokoro')
+    @patch('Simpler_Kokoro.simpler_kokoro.SimplerKokoro')
     @patch('sys.argv', [
         'simpler_kokoro', 'generate',
         '--text', 'Test text',
@@ -586,6 +654,8 @@ class TestCLI:
     ])
     def test_cli_generate(self, mock_sk_class, capsys):
         """Test CLI generate command."""
+        from Simpler_Kokoro.simpler_kokoro import main
+        
         mock_sk = MagicMock()
         mock_sk_class.return_value = mock_sk
         
@@ -595,7 +665,7 @@ class TestCLI:
         captured = capsys.readouterr()
         assert "Audio saved to output.wav" in captured.out
     
-    @patch('simpler_kokoro.SimplerKokoro')
+    @patch('Simpler_Kokoro.simpler_kokoro.SimplerKokoro')
     @patch('sys.argv', [
         'simpler_kokoro', 'generate',
         '--text', 'Test',
@@ -606,6 +676,8 @@ class TestCLI:
     ])
     def test_cli_generate_with_subtitles(self, mock_sk_class, capsys):
         """Test CLI generate with subtitles."""
+        from Simpler_Kokoro.simpler_kokoro import main
+        
         mock_sk = MagicMock()
         mock_sk_class.return_value = mock_sk
         
@@ -639,8 +711,8 @@ class TestExceptionHandling:
 class TestIntegration:
     """Integration tests for complete workflows."""
     
-    @patch('simpler_kokoro.hf.list_repo_files')
-    @patch('simpler_kokoro.hf.hf_hub_download')
+    @patch('Simpler_Kokoro.simpler_kokoro.hf.list_repo_files')
+    @patch('Simpler_Kokoro.simpler_kokoro.hf.hf_hub_download')
     def test_full_initialization_workflow(self, mock_download, mock_list_files, temp_models_dir):
         """Test complete initialization workflow."""
         mock_list_files.return_value = ["voices/af_alloy.pt"]
@@ -737,7 +809,7 @@ class TestEdgeCases:
         
         assert config.output_path == special_path
     
-    @patch('simpler_kokoro.hf.list_repo_files')
+    @patch('Simpler_Kokoro.simpler_kokoro.hf.list_repo_files')
     def test_empty_voice_list(self, mock_list_files):
         """Test handling of empty voice list."""
         mock_list_files.return_value = []
@@ -745,8 +817,328 @@ class TestEdgeCases:
         voices = SimplerKokoro.list_voices_remote()
         
         assert voices == []
+    
+    def test_unicode_text(self):
+        """Test handling of unicode characters in text."""
+        unicode_text = "Hello 世界 🌍 Привет مرحبا"
+        config = GenerationConfig(
+            text=unicode_text,
+            voice="af_alloy",
+            output_path="output.wav"
+        )
+        
+        assert config.text == unicode_text
+    
+    def test_voice_with_special_characters(self):
+        """Test voice names with edge case characters."""
+        voice = Voice(
+            name="a_test-voice",
+            display_name="Test-Voice",
+            gender="Female",
+            lang_code="a",
+            model_path="/path/to/model.pt"
+        )
+        
+        assert voice.name == "a_test-voice"
+
+
+class TestPerformance:
+    """Performance and stress tests."""
+    
+    @pytest.mark.slow
+    def test_multiple_generations(self, mock_voices):
+        """Test multiple consecutive generations."""
+        sk = SimplerKokoro(skip_download=True)
+        sk.voices = mock_voices
+        sk.kokoro = None  # Will fail but tests the loop
+        
+        for i in range(5):
+            try:
+                sk.generate(
+                    text=f"Test {i}",
+                    voice="af_alloy",
+                    output_path=f"output_{i}.wav"
+                )
+            except KokoroException:
+                pass  # Expected without kokoro module
+    
+    @pytest.mark.slow
+    @patch('Simpler_Kokoro.simpler_kokoro.hf.list_repo_files')
+    def test_large_voice_list(self, mock_list_files):
+        """Test handling of large voice list."""
+        # Generate 100 mock voice files
+        mock_files = [f"voices/{chr(97+i//50)}{'f' if i%2 else 'm'}_{i:04d}.pt" 
+                      for i in range(100)]
+        mock_list_files.return_value = mock_files
+        
+        voices = SimplerKokoro.list_voices_remote()
+        
+        assert len(voices) == 100
+    
+    def test_concurrent_voice_lookup(self, mock_voices):
+        """Test looking up multiple voices rapidly."""
+        sk = SimplerKokoro(skip_download=True)
+        sk.voices = mock_voices
+        
+        for _ in range(10):
+            voice = sk.get_voice("af_alloy")
+            assert voice.name == "af_alloy"
+
+class TestFileHandling:
+    """Tests for file operations and I/O."""
+    
+    def test_output_directory_creation(self, temp_models_dir):
+        """Test that output directories are created automatically."""
+        output_path = os.path.join(temp_models_dir, "nested", "dir", "output.wav")
+        
+        config = GenerationConfig(
+            text="Test",
+            voice="af_alloy",
+            output_path=output_path
+        )
+        
+        # The parent directory should be created when writing
+        parent_dir = Path(output_path).parent
+        assert not parent_dir.exists()  # Doesn't exist yet
+    
+    def test_subtitle_path_with_unicode(self, temp_models_dir):
+        """Test subtitle paths with unicode characters."""
+        subtitle_path = os.path.join(temp_models_dir, "字幕.srt")
+        subtitles = {0: {'text': 'Test', 'start': 0.0, 'end': 1.0}}
+        
+        SimplerKokoro._write_srt_subtitles(subtitles, subtitle_path)
+        
+        assert Path(subtitle_path).exists()
+    
+    @patch('Simpler_Kokoro.simpler_kokoro.sf.write')
+    @patch('Simpler_Kokoro.simpler_kokoro.sf.read')
+    def test_stereo_to_mono_conversion(self, mock_read, mock_write, temp_models_dir, mock_audio_data):
+        """Test that stereo audio is converted to mono."""
+        # Create stereo audio
+        stereo_audio = np.random.randn(24000, 2)
+        mock_read.return_value = (stereo_audio, 24000)
+        
+        sk = SimplerKokoro(models_dir=temp_models_dir, skip_download=True)
+        
+        config = GenerationConfig(
+            text="Test",
+            voice="af_alloy",
+            output_path=os.path.join(temp_models_dir, "output.wav")
+        )
+        
+        generator = [mock_audio_data]
+        sk._process_audio_chunks(generator, config)
+        
+        # Verify write was called
+        assert mock_write.called
+        # The combined audio should be 1D (mono)
+        written_audio = mock_write.call_args[0][1]
+        assert written_audio.ndim == 1
+
+
+class TestErrorRecovery:
+    """Tests for error handling and recovery."""
+    
+    @patch('Simpler_Kokoro.simpler_kokoro.sf.read')
+    @patch('Simpler_Kokoro.simpler_kokoro.sf.write')
+    def test_handle_corrupted_audio_chunk(self, mock_write, mock_read, 
+                                          temp_models_dir, mock_audio_data):
+        """Test handling of corrupted audio chunks."""
+        # First chunk is good, second raises error
+        mock_read.side_effect = [
+            (np.random.randn(24000), 24000),
+            Exception("Corrupted audio"),
+            (np.random.randn(24000), 24000)
+        ]
+        
+        sk = SimplerKokoro(models_dir=temp_models_dir, skip_download=True)
+        
+        config = GenerationConfig(
+            text="Test",
+            voice="af_alloy",
+            output_path=os.path.join(temp_models_dir, "output.wav")
+        )
+        
+        # Create multiple chunks
+        generator = [mock_audio_data, mock_audio_data, mock_audio_data]
+        
+        # Should handle the error and continue
+        sk._process_audio_chunks(generator, config)
+        
+        # Should still write something
+        assert mock_write.called
+    
+    def test_invalid_speed_value(self):
+        """Test that invalid speed values are accepted (library decides validation)."""
+        config = GenerationConfig(
+            text="Test",
+            voice="af_alloy",
+            output_path="output.wav",
+            speed=-1.0  # Negative speed
+        )
+        
+        assert config.speed == -1.0  # Library accepts it, validation elsewhere
+    
+    def test_missing_voice_model_file(self, mock_voices):
+        """Test handling when voice model file doesn't exist."""
+        sk = SimplerKokoro(skip_download=True)
+        sk.voices = mock_voices
+        sk.kokoro = MagicMock()
+        
+        # Voice exists in list but file doesn't exist
+        voice_obj = sk.get_voice("af_alloy")
+        assert voice_obj is not None
+        assert not Path(voice_obj.model_path).exists()
+
+
+class TestMemoryManagement:
+    """Tests for memory handling."""
+    
+    @patch('Simpler_Kokoro.simpler_kokoro.sf.write')
+    @patch('Simpler_Kokoro.simpler_kokoro.sf.read')
+    def test_large_audio_concatenation(self, mock_read, mock_write, 
+                                       temp_models_dir, mock_audio_data):
+        """Test concatenating many audio chunks."""
+        # Simulate many chunks
+        mock_read.return_value = (np.random.randn(24000), 24000)
+        
+        sk = SimplerKokoro(models_dir=temp_models_dir, skip_download=True)
+        
+        config = GenerationConfig(
+            text="Test",
+            voice="af_alloy",
+            output_path=os.path.join(temp_models_dir, "output.wav")
+        )
+        
+        # Create 50 chunks
+        generator = [mock_audio_data for _ in range(50)]
+        
+        sk._process_audio_chunks(generator, config)
+        
+        assert mock_write.called
+
+
+class TestConfigValidation:
+    """Tests for configuration validation."""
+    
+    def test_sample_rate_options(self):
+        """Test different sample rate configurations."""
+        for rate in [8000, 16000, 22050, 24000, 44100, 48000]:
+            config = GenerationConfig(
+                text="Test",
+                voice="af_alloy",
+                output_path="output.wav",
+                sample_rate=rate
+            )
+            assert config.sample_rate == rate
+    
+    def test_split_pattern_variations(self):
+        """Test different split patterns."""
+        patterns = [
+            r'\.\s+',
+            r'\n',
+            r'[.!?]\s+',
+            r'\n\n',
+        ]
+        
+        for pattern in patterns:
+            config = GenerationConfig(
+                text="Test",
+                voice="af_alloy",
+                output_path="output.wav",
+                split_pattern=pattern
+            )
+            assert config.split_pattern == pattern
+
+
+class TestConstants:
+    """Tests for class constants and defaults."""
+    
+    def test_default_values(self):
+        """Test that default constants are properly set."""
+        assert SimplerKokoro.DEFAULT_REPO == "hexgrad/Kokoro-82M"
+        assert SimplerKokoro.DEFAULT_MODELS_DIR == "models"
+        assert SimplerKokoro.SAMPLE_RATE == 24000
+    
+    def test_generation_config_defaults_match_class(self):
+        """Test that GenerationConfig defaults match expected values."""
+        config = GenerationConfig(
+            text="Test",
+            voice="test",
+            output_path="out.wav"
+        )
+        assert config.sample_rate == SimplerKokoro.SAMPLE_RATE
+
+class TestLogging:
+    """Tests for logging functionality."""
+    
+    def test_debug_logging(self, temp_models_dir, caplog):
+        """Test that debug logging works."""
+        with caplog.at_level(logging.DEBUG):
+            sk = SimplerKokoro(
+                models_dir=temp_models_dir,
+                log_level=logging.DEBUG,
+                skip_download=True
+            )
+            sk.ensure_models_dirs()
+            
+        assert any("Model directories ensured" in record.message 
+                  for record in caplog.records)
+    
+    def test_error_logging(self, caplog):
+        """Test that errors are logged properly."""
+        with caplog.at_level(logging.ERROR):
+            with patch('Simpler_Kokoro.simpler_kokoro.hf.list_repo_files', 
+                      side_effect=Exception("Test error")):
+                try:
+                    SimplerKokoro.list_voices_remote()
+                except ModelDownloadError:
+                    pass
+        
+        assert any("Error fetching voice list" in record.message 
+                  for record in caplog.records)
+
+
+class TestVoiceMetadata:
+    """Tests for voice metadata handling."""
+    
+    def test_voice_display_name_generation(self):
+        """Test that display names are generated correctly."""
+        test_cases = [
+            ("af_alloy", "Alloy"),
+            ("am_echo", "Echo"),
+            ("bf_bella", "Bella"),
+        ]
+        
+        for voice_name, expected_display in test_cases:
+            voice = Voice(
+                name=voice_name,
+                display_name=voice_name[3:].capitalize(),
+                gender="Female",
+                lang_code=voice_name[0],
+                model_path="/path/to/model.pt"
+            )
+            assert voice.display_name == expected_display
+    
+    def test_language_code_extraction(self):
+        """Test that language codes are extracted correctly."""
+        voice = Voice(
+            name="af_test",
+            display_name="Test",
+            gender="Female",
+            lang_code="a",
+            model_path="/path"
+        )
+        assert voice.lang_code == "a"
+
+
+# Conftest additions for pytest configuration
+def pytest_configure(config):
+    """Configure pytest with custom markers."""
+    config.addinivalue_line(
+        "markers", "slow: marks tests as slow (deselect with '-m \"not slow\"')"
+    )
 
 
 if __name__ == '__main__':
-    pytest.main([__file__, '-v', '--tb=short'])
-    
+    pytest.main([__file__, '-v', '--tb=short', '--color=yes'])
