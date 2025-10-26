@@ -95,15 +95,21 @@ from Simpler_Kokoro import SimplerKokoro
 # Create an instance
 sk = SimplerKokoro()
 
-# List available voices
+# Load the available voices
 voices = sk.list_voices()
-print("Available voices:", [v['name'] for v in voices])
+
+# (optional) Print out the voices
+for voice in voices:
+    print(voice) # Print out the voice object
+
+# Use the first voice as example
+selected_voice = voices[0]
 
 # Generate speech
 sk.generate(
-    text="Hello, this is a test of the Simpler Kokoro voice synthesis.",
-    voice=voices[0]['name'], # Make sure to specify the name of the voice
-    output_path="output.wav"
+    text='Hello, this is a test of the Simpler Kokoro voice synthesis.', # Text to generate 
+    voice=selected_voice.name, # Grab the name from the selected voice
+    output_path='output.wav' # Select the output path.
 )
 ```
 </details>
@@ -112,15 +118,25 @@ sk.generate(
 <summary><b>Generate Speech with Subtitles</b></summary>
 
 ```python
+from Simpler_Kokoro import SimplerKokoro
+
+# Create an instance
 sk = SimplerKokoro()
 
+# Load the available voices
+voices = sk.list_voices()
+
+# Use the first voice as example
+selected_voice = voices[0]
+
+# Generate speech
 sk.generate(
-    text="Hello, this is a test. This is another sentence.",
-    voice=voices[0]['name'],
-    output_path="output.wav",
-    write_subtitles=True,
-    subtitles_path="output.srt",
-    subtititles_word_level=True
+    text='Hello, this will generate a subtitles.srt file along with output.wav', # Text to generate
+    voice=selected_voice.name, # Grab the name from the selected voice
+    output_path='output.wav', # Select the output path
+    write_subtitles=True, # Enable subtitle generation
+    subtitles_path='subtitles.srt', # (optional) Specify the subtitle .srt filename
+    subtitles_word_level=True # (optional) Enable word level timestamps
 )
 ```
 </details>
@@ -129,13 +145,23 @@ sk.generate(
 <summary><b>Generate Speech with Custom Speed</b></summary>
 
 ```python
+from Simpler_Kokoro import SimplerKokoro
+
+# Create an instance
 sk = SimplerKokoro()
 
+# Load the available voices
+voices = sk.list_voices()
+
+# Use the first voice as example
+selected_voice = voices[0]
+
+# Generate speech
 sk.generate(
-    text="This is spoken faster than normal.",
-    voice=voices[1]['name'],
-    output_path="fast_output.wav",
-    speed=1.5
+    text='Hello, this is a test of the Simpler Kokoro voice synthesis.', # Text to generate 
+    voice=selected_voice.name, # Grab the name from the selected voice
+    output_path='output.wav', # Select the output path
+    speed=1.5 # This represents 150% Speed. 1 means 100% and 0.5 means 50%
 )
 ```
 </details>
@@ -144,12 +170,22 @@ sk.generate(
 <summary><b>Specify a Path to Download Models</b></summary>
 
 ```python
-sk = SimplerKokoro(models_dir="Folder-to-put-models-in") # Put the models dir here
+from Simpler_Kokoro import SimplerKokoro
 
+# Create an instance
+sk = SimplerKokoro(models_dir='<PATH TO PUT MODELS>') # Put in the path where you want the models to be saved here
+
+# Load the available voices
+voices = sk.list_voices()
+
+# Use the first voice as example
+selected_voice = voices[0]
+
+# Generate speech
 sk.generate(
-    text="Thats a cool model directory.",
-    voice=voices[1]['name'],
-    output_path="fast_output.wav",
+    text='Select a custom directory for the models!', # Text to generate 
+    voice=selected_voice.name, # Grab the name from the selected voice
+    output_path='output.wav' # Select the output path.
 )
 ```
 </details>

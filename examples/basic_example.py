@@ -3,13 +3,19 @@ from Simpler_Kokoro import SimplerKokoro
 # Create an instance
 sk = SimplerKokoro()
 
-# List available voices
+# Load the available voices
 voices = sk.list_voices()
-print("Available voices:", [v['name'] for v in voices])
+
+# (optional) Print out the voices
+for voice in voices:
+    print(voice) # Print out the voice object
+
+# Use the first voice as example
+selected_voice = voices[0]
 
 # Generate speech
 sk.generate(
-    text="Hello, this is a test of the Simpler Kokoro voice synthesis.",
-    voice=voices[0]['name'],
-    output_path="output.wav"
+    text='Hello, this is a test of the Simpler Kokoro voice synthesis.', # Text to generate 
+    voice=selected_voice.name, # Grab the name from the selected voice
+    output_path='output.wav' # Select the output path.
 )
