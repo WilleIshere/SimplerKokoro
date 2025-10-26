@@ -11,7 +11,7 @@ selected_voice = voices[0]
 
 # Generate speech
 sk.generate(
-    text="Hello, this is a test of the Simpler Kokoro voice synthesis.", # Text to generate 
+    text='Select a custom directory for the models!', # Text to generate 
     voice=selected_voice.name, # Grab the name from the selected voice
-    output_path="output.wav" # Select the output path.
+    output_path='output.wav' # Select the output path.
 )
